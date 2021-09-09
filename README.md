@@ -25,7 +25,7 @@ data.json:
         "team_name": "", // team name
         "web_page_table_selector": "", // id table selector from the actual indoor soccer page (second table on the page, contains Schedule word)
         "web_page_url": "", // url to the actual page with teams and their schedule
-        "email_recipients": "", // email recipients
+        "email_recipients": "", // email recipients (comma separated)
         "phone_recipients": [], // phone recipients
         "notify_days_ahead": [0, 3] // notify days ahead (0 means game day - notify on game day)
     }
