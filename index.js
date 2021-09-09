@@ -4,29 +4,13 @@
     Description:    Indoor Soccer Notifier
 */
 
-// SETTINGS
-const email_list = '' // send emails to
-const phones_list = [''] // send sms to phone numbers
-const twilio_account_sid = ''; // twilio account sid
-const twilio_auth_token = ''; // twilio auth token
-const twilio_phone_number = '' // twilio phone number 
-const yahoo_email = ''; // my yahoo email (send)
-const yahoo_password = ''; // my yahoo password
-const team_name = "Broadmoor Blues (Blue)" // my team
-const notify_me_days_ahead = [0, 2]; // 0 = game day, max 5
-const send_emails = true; // control flag
-const send_sms = true; // control flag
-const is_production = true; // are you debugging?
-
-// LIBRARIES
 const cheerio = require('cheerio');
 const got = require('got');
 const nodemailer = require('nodemailer');
-const client = require('twilio')(twilio_account_sid, twilio_auth_token);
-
-// OTHER
-const table_selector = '#ctl00_C_Schedule1_GridView1'
-const url = 'https://shreveportindoorsoccer.ezleagues.ezfacility.com/leagues/396763/Mens-3.aspx';
+const fs = require('fs');
+const config = ParseJson('config.json');
+const data_array = ParseJson('data.json');
+const client = require('twilio')(config.twilio_account_sid, config.twilio_auth_token);
 const months =
 [
     {month: 'Jan', monthNum: '1'},
@@ -43,9 +27,16 @@ const months =
     {month: 'Dec', monthNum: '12'}
 ]
 
+function ParseJson(fileName){
+    var rawdata = fs.readFileSync(fileName);
+    var result = JSON.parse(rawdata);
+    return result;
+}
+
 function Run(){
     return new Promise((resolve, reject) => {
-        got(url).then(response => {
+        data_array.forEach(data  => {
+        got(data.web_page_url).then(response => {
             const $ = cheerio.load(response.body);
             const options = {
                 rowForHeadings: 0,  // extract th cells from this row for column headings (zero-based)
@@ -103,15 +94,15 @@ function Run(){
                     service: 'Yahoo',
                     secure: false,
                     auth: {
-                        user: yahoo_email,
-                        pass: yahoo_password
+                        user: config.yahoo_email,
+                        pass: config.yahoo_password
                     }
                     // logger: 'true'
                 });
                 
                 var mailOptions = {
-                    from: yahoo_email,
-                    to: email_list, // recipients
+                    from: config.yahoo_email,
+                    to: data.email_recipients, // recipients
                     subject: 'Shreveport Indoor Soccer Notification',
                     text: body
                 };
@@ -119,7 +110,7 @@ function Run(){
                 var promises = [];
 
                 // Send Email
-                if (send_emails) {
+                if (config.send_emails) {
                     var email_promise =  new Promise((resolve, reject) => {
                         transporter.sendMail(mailOptions, function(error, info)
                         {
@@ -134,12 +125,12 @@ function Run(){
                 }
 
                 // Send SMS Messages
-                if (send_sms) {
-                    phones_list.forEach(phone_number  => {
+                if (config.send_sms) {
+                    data.phone_recipients.forEach(phone_number  => {
                         var sms_promise = new Promise((resolve, reject) => {
                             client.messages.create({
                                 body: body,
-                                from: twilio_phone_number,
+                                from: config.twilio_phone_number,
                                 to: phone_number
                             })
                             .then(message => {
@@ -206,7 +197,7 @@ function Run(){
                 $(jsonReponse).each(function(i, element) {
                     var home = element.Home;
                     var away = element.Away;
-                    if (home === team_name || away === team_name) 
+                    if (home === data.team_name || away === data.team_name) 
                     {
                         my_team.push(element)
                     }
@@ -223,7 +214,7 @@ function Run(){
                 });
             
                 var game_coming_up = null;
-                notify_me_days_ahead.forEach(notifyDays  => {
+                data.notify_days_ahead.forEach(notifyDays  => {
                     var date_to_check = get_date(notifyDays)
                     var game = find_game(unplayed_games, date_to_check);
                     if (game !== null) {
@@ -239,14 +230,17 @@ function Run(){
                     message += 'Date: ' + game_coming_up.Date + '\n'
                     message += 'Game: ' + game_coming_up.Home + ' vs ' + game_coming_up.Away + '\n'
                     message += 'Time: ' + game_coming_up.TimeStatus + '\n'
+                    message += 'This is automated message, please contact Srdan Ristic if you have any questions.' + '\n'
                 }
             
                 if (message !== null && message !== undefined && message !== '') 
                 {
                     var promises = notify(message);
-                    Promise.all(promises).then((values) => {
-                        resolve(values)
-                    });
+                    if (promises.length > 0) {
+                        Promise.all(promises).then((values) => {
+                            resolve(values)
+                        });
+                    }
                 }
                 else
                 {
@@ -254,7 +248,7 @@ function Run(){
                 }
             }
 
-            $(table_selector).each(function(i, table) {
+            $(data.web_page_table_selector).each(function(i, table) {
                 var trs = $(table).find('tr')
 
                 // Set up the column heading names
@@ -269,11 +263,12 @@ function Run(){
         }).catch(err => {
             reject("Something went wrong during web page parsing. Exception: " + err)
         });
+        });
     });
 }
 
 // DEBUG
-if (!is_production)
+if (!config.is_production)
 {
     var run = async function(event) {
         try 
@@ -289,7 +284,7 @@ if (!is_production)
         console.log(a)
     });
 }
-// LAMBDA
+// AWS LAMBDA
 else
 {
     exports.handler = async function(event) {

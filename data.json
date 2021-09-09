@@ -1,0 +1,18 @@
+[
+    {
+        "team_name": "Broadmoor Blues (Blue)",
+        "web_page_table_selector": "#ctl00_C_Schedule1_GridView1",
+        "web_page_url": "https://shreveportindoorsoccer.ezleagues.ezfacility.com/leagues/396763/Mens-3.aspx",
+        "email_recipients": "surgenic@gmail.com",
+        "phone_recipients": ["13189001294"],
+        "notify_days_ahead": [0, 3]
+    },
+    {
+        "team_name": "Brush my Ball Fro (Grey)",
+        "web_page_table_selector": "#ctl00_C_Schedule1_GridView1",
+        "web_page_url": "https://shreveportindoorsoccer.ezleagues.ezfacility.com/leagues/396762/Mens-4.aspx",
+        "email_recipients": "surgenic@gmail.com",
+        "phone_recipients": ["13189001294"],
+        "notify_days_ahead": [0, 3]
+    }
+]
