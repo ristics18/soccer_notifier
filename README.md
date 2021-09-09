@@ -4,7 +4,7 @@ This script parses through schedule tables on Indoor Soccer Website and it sends
 ## Setup
 
 config.json:
-{
+```yaml{
     "twilio_account_sid": "", // your twilio account id (www.twilio.com)
     "twilio_auth_token": "", // your twilio auth token (www.twilio.com)
     "yahoo_email": "", // email address that is going to be used as a sender
@@ -14,8 +14,10 @@ config.json:
     "send_sms": true, // flag that controlls whether the script should send sms or not
     "is_production": true // are you running production code or just debugging
 }
+```
 
 data.json:
+```yaml
 [
     // Your first team
     {
@@ -27,3 +29,4 @@ data.json:
         "notify_days_ahead": [0, 3] // notify days ahead (0 means game day - notify on game day)
     }
 ]
+```
