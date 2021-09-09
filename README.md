@@ -4,7 +4,8 @@ This script parses through schedule tables on Indoor Soccer Website and it sends
 ## Setup
 
 config.json:
-```yaml{
+```yaml
+{
     "twilio_account_sid": "", // your twilio account id (www.twilio.com)
     "twilio_auth_token": "", // your twilio auth token (www.twilio.com)
     "yahoo_email": "", // email address that is going to be used as a sender
