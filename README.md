@@ -31,3 +31,8 @@ data.json:
     }
 ]
 ```
+
+## Run
+
+To run the script simply execute:
+> node index.js
