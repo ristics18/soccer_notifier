@@ -10,7 +10,10 @@ const nodemailer = require('nodemailer');
 const fs = require('fs');
 const config = ParseJson('config.json');
 const data_array = ParseJson('data.json');
-const client = require('twilio')(config.twilio_account_sid, config.twilio_auth_token);
+const client = null;
+if (config.send_sms) {
+    client = require('twilio')(config.twilio_account_sid, config.twilio_auth_token);
+}
 const months =
 [
     {month: 'Jan', monthNum: '1'},
