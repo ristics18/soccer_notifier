@@ -10,7 +10,7 @@ const nodemailer = require('nodemailer');
 const fs = require('fs');
 const config = ParseJson('config.json');
 const data_array = ParseJson('data.json');
-const client = null;
+var client = null;
 if (config.send_sms) {
     client = require('twilio')(config.twilio_account_sid, config.twilio_auth_token);
 }
@@ -31,7 +31,12 @@ const months =
 ]
 
 function ParseJson(fileName){
-    var rawdata = fs.readFileSync(fileName);
+    var runningOnLambda = process.env.LAMBDA_TASK_ROOT ? true : false;
+    var path = fileName;
+    if (runningOnLambda) {
+        path = "soccer_notifier/" + fileName;
+    }
+    var rawdata = fs.readFileSync(path);
     var result = JSON.parse(rawdata);
     return result;
 }
@@ -102,7 +107,7 @@ function Run(){
                     }
                     // logger: 'true'
                 });
-                
+
                 var mailOptions = {
                     from: config.yahoo_email,
                     to: data.email_recipients, // recipients
@@ -215,7 +220,7 @@ function Run(){
                 unplayed_games.forEach(unplayed_game  => {
                     unplayed_game.FormattedDate = parse_date(unplayed_game.Date);
                 });
-            
+
                 var game_coming_up = null;
                 data.notify_days_ahead.forEach(notifyDays  => {
                     var date_to_check = get_date(notifyDays)
