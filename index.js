@@ -222,8 +222,10 @@ function Run(){
                 });
 
                 var game_coming_up = null;
+                var notify_days = []
                 data.notify_days_ahead.forEach(notifyDays  => {
                     var date_to_check = get_date(notifyDays)
+                    notify_days.push(date_to_check)
                     var game = find_game(unplayed_games, date_to_check);
                     if (game !== null) {
                         game_coming_up = game;
@@ -244,6 +246,7 @@ function Run(){
                 if (message !== null && message !== undefined && message !== '') 
                 {
                     var promises = notify(message);
+                    console.log(message + "Email: " + data.email_recipients + '\n')
                     if (promises.length > 0) {
                         Promise.all(promises).then((values) => {
                             resolve(values)
@@ -252,7 +255,9 @@ function Run(){
                 }
                 else
                 {
-                    resolve("No games!")
+                    var no_games_message = "No games found for the team " + data.team_name + '\n' + "Email: " + data.email_recipients + '\n' + "Dates Checked: " + notify_days.toString() + '\n';
+                    console.log(no_games_message)
+                    resolve(no_games_message)
                 }
             }
 
@@ -289,7 +294,7 @@ if (!config.is_production)
         }
     };
     Promise.resolve(run()).then(a => {
-        console.log(a)
+        // console.log(a)
     });
 }
 // AWS LAMBDA
