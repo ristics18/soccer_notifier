@@ -3,7 +3,7 @@ This script parses through schedule tables on Indoor Soccer Website and it sends
 
 ## Setup
 
-config.json:
+config.json (you will need to create this file in root folder):
 ```yaml
 {
     "twilio_account_sid": "", // your twilio account id (www.twilio.com)
@@ -20,7 +20,6 @@ config.json:
 data.json:
 ```yaml
 [
-    // Your first team
     {
         "team_name": "", // team name
         "web_page_table_selector": "", // id table selector from the actual indoor soccer page (second table on the page, contains Schedule word)
