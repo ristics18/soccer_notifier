@@ -18,7 +18,7 @@
     {
         "team_name": "Broadmoor Blues (Blue)",
         "web_page_table_selector": "#ctl00_C_Schedule1_GridView1",
-        "web_page_url": "https://shreveportindoorsoccer.ezleagues.ezfacility.com/leagues/399199/Mens-3.aspx",
+        "web_page_url": "https://shreveportindoorsoccer.ezleagues.ezfacility.com/leagues/402251/Mens-3.aspx",
         "email_recipients": "secret_admirer_la2001@yahoo.com",
         "phone_recipients": ["13182307190"],
         "notify_days_ahead": [0, 7]
@@ -26,7 +26,7 @@
     {
         "team_name": "Swamp Donkeys (Purple)",
         "web_page_table_selector": "#ctl00_C_Schedule1_GridView1",
-        "web_page_url": "https://shreveportindoorsoccer.ezleagues.ezfacility.com/leagues/399198/Mens-4.aspx",
+        "web_page_url": "https://shreveportindoorsoccer.ezleagues.ezfacility.com/leagues/402250/Mens-4.aspx",
         "email_recipients": "secret_admirer_la2001@yahoo.com",
         "phone_recipients": ["13182307190"],
         "notify_days_ahead": [0, 7]
